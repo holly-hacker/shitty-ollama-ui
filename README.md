@@ -1,4 +1,4 @@
-# Rspack project
+# Shitty Ollama UI
 
 ## Setup
 
