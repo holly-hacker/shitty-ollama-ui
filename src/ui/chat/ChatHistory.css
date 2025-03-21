@@ -1,0 +1,25 @@
+.message-container {
+	display: flex;
+	flex-direction: column;
+}
+
+article {
+	max-width: 65%;
+
+	white-space-collapse: preserve;
+}
+
+article.system {
+	max-width: 100%;
+	width: 100%;
+}
+
+article.assistant {
+	align-self: self-start;
+}
+
+article.user {
+	background-color: var(--pico-primary-background);
+	color: var(--pico-primary-inverse);
+	align-self: self-end;
+}

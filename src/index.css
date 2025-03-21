@@ -3,3 +3,13 @@
 :root {
 	--pico-font-family: "Inter", sans-serif;
 }
+
+html,
+body {
+	height: 100%;
+}
+
+body {
+	display: flex;
+	flex-direction: column;
+}

@@ -1,5 +1,14 @@
+import Header from './ui/Header';
+import { OllamaProvider } from './state/OllamaContext';
+import { Chat } from './ui/chat/Index';
+
 function App() {
-	return <div>hello world</div>;
+	return (
+		<OllamaProvider>
+			<Header />
+			<Chat />
+		</OllamaProvider>
+	);
 }
 
 export default App;

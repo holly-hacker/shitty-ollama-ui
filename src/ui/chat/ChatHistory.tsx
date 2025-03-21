@@ -1,0 +1,21 @@
+import { useContext } from 'react';
+import { OllamaContext } from '../../state/OllamaContext';
+import './ChatHistory.css';
+
+export default function ChatHistory() {
+	const { state, dispatch } = useContext(OllamaContext);
+
+	if (!state.messages) {
+		return <>No messages yet</>;
+	}
+
+	return (
+		<div className="message-container">
+			{state.messages.map((msg) => (
+				<article className={msg.side} key={msg.id}>
+					{msg.text}
+				</article>
+			))}
+		</div>
+	);
+}
