@@ -3,7 +3,7 @@ import { OllamaContext } from '../../state/OllamaContext';
 import './ChatHistory.css';
 
 export default function ChatHistory() {
-	const { state, dispatch } = useContext(OllamaContext);
+	const { state } = useContext(OllamaContext);
 
 	if (!state.messages) {
 		return <>No messages yet</>;
@@ -12,7 +12,11 @@ export default function ChatHistory() {
 	return (
 		<div className="message-container">
 			{state.messages.map((msg) => (
-				<article className={msg.side} key={msg.id}>
+				<article
+					className={msg.side}
+					key={msg.id}
+					aria-busy={!msg.text && state.streaming}
+				>
 					{msg.text}
 				</article>
 			))}
