@@ -5,6 +5,7 @@ import {
 	type OllamaState,
 } from '../../state/OllamaContext';
 import './ChatInput.css';
+import { SendIcon, StopCircleIcon } from 'lucide-react';
 
 async function generateResponse(
 	state: OllamaState,
@@ -42,44 +43,64 @@ export default function ChatInput() {
 	const { state, dispatch } = useContext(OllamaContext);
 
 	const [textInput, setTextInput] = useState('');
-	const [shouldGenerateResponse, setShouldGenerateResponse] = useState(false);
+	const [generateResponseQueued, setGenerateResponseQueued] = useState(false);
 
 	const isEnabled = state.modelName && !state.streaming;
 
 	useEffect(() => {
-		if (shouldGenerateResponse) {
+		if (generateResponseQueued) {
 			generateResponse(state, dispatch);
-			setShouldGenerateResponse(false);
+			setGenerateResponseQueued(false);
 		}
-	}, [state, dispatch, shouldGenerateResponse]);
+	}, [state, dispatch, generateResponseQueued]);
 
 	function handleKeyDown(
 		event: React.KeyboardEvent<HTMLTextAreaElement>,
 	): void {
 		if (event.key === 'Enter' && !event.shiftKey) {
 			event.preventDefault();
+			trySendMessage();
+		}
+	}
 
-			if (textInput.trim()) {
-				dispatch({ type: 'addMessage', text: textInput.trim(), role: 'user' });
-				setShouldGenerateResponse(true);
-				setTextInput('');
-			}
+	function trySendMessage() {
+		if (textInput.trim()) {
+			dispatch({ type: 'addMessage', text: textInput.trim(), role: 'user' });
+			setGenerateResponseQueued(true);
+			setTextInput('');
 		}
 	}
 
 	return (
-		<>
-			<textarea
-				disabled={!isEnabled}
-				placeholder="Type to chat..."
-				value={textInput}
-				onChange={(e) => setTextInput(e.target.value)}
-				onKeyDown={handleKeyDown}
-			/>
-			<small>
-				Press <kbd>Enter</kbd> to send, press <kbd>Enter</kbd>+<kbd>Shift</kbd>{' '}
-				to create a new line.
-			</small>
-		</>
+		<div className="chat-bar">
+			<div className="chat-bar-input">
+				<textarea
+					disabled={!isEnabled}
+					placeholder="Type to chat..."
+					value={textInput}
+					onChange={(e) => setTextInput(e.target.value)}
+					onKeyDown={handleKeyDown}
+				/>
+				<small>
+					Press <kbd>Enter</kbd> to send or <kbd>Enter</kbd>+<kbd>Shift</kbd> to
+					create a new line.
+				</small>
+
+				<button
+					type="button"
+					className={`send-stop-icon ${state.streaming ? 'secondary' : ''}`}
+					disabled={!state.streaming && !textInput.trim()}
+					onClick={() => {
+						if (state.streaming) {
+							state.api.abort();
+						} else {
+							trySendMessage();
+						}
+					}}
+				>
+					{!state.streaming ? <SendIcon /> : <StopCircleIcon />}
+				</button>
+			</div>
+		</div>
 	);
 }

@@ -1,8 +1,19 @@
-textarea {
+.chat-bar {
+	position: relative;
+	width: 100%;
+}
+
+.chat-bar textarea {
 	resize: none;
 }
 
-textarea + small {
-	/* PicoCSS seems to add its own negative margin */
-	margin: 0;
+.chat-bar kbd {
+	padding: 0.125rem;
+}
+
+.chat-bar .send-stop-icon {
+	position: absolute;
+	right: 1rem;
+	top: 1rem;
+	padding: 8px;
 }
