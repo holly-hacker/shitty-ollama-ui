@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import './Header.css';
 import type { ModelResponse } from 'ollama/browser';
 import { OllamaContext } from '../state/OllamaContext';
+import SettingsButton from './settings/SettingsButton';
 
 export default function Header() {
 	const { state, dispatch } = useContext(OllamaContext);
@@ -20,30 +21,30 @@ export default function Header() {
 	}, [state.api.list, dispatch]);
 
 	return (
-		<>
-			<header className="container">
-				<h1>Shitty Ollama UI</h1>
-				{state.modelName ? (
-					<select
-						value={state.modelName}
-						onChange={(e) =>
-							dispatch({ type: 'setModel', modelName: e.target.value })
-						}
-					>
-						{models.map((item) => {
-							return (
-								<option key={item.model} value={item.model}>
-									{item.name}
-								</option>
-							);
-						})}
-					</select>
-				) : (
-					<select disabled={true}>
-						<option value="">Loading...</option>
-					</select>
-				)}
-			</header>
-		</>
+		<header className="container top-header">
+			<h1>Shitty Ollama UI</h1>
+			<div className="spacer" />
+			{state.modelName ? (
+				<select
+					value={state.modelName}
+					onChange={(e) =>
+						dispatch({ type: 'setModel', modelName: e.target.value })
+					}
+				>
+					{models.map((item) => {
+						return (
+							<option key={item.model} value={item.model}>
+								{item.name}
+							</option>
+						);
+					})}
+				</select>
+			) : (
+				<select disabled={true}>
+					<option value="">Loading...</option>
+				</select>
+			)}
+			<SettingsButton />
+		</header>
 	);
 }

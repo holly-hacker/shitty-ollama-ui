@@ -1,10 +1,15 @@
-header {
+header.top-header {
 	display: flex;
 	width: 100%;
 	justify-content: space-between;
 	align-items: center;
+	gap: 1rem;
 }
 
-header > select {
+header.top-header > select {
 	width: auto;
+}
+
+header.top-header .spacer {
+	flex-grow: 1;
 }

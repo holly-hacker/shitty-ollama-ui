@@ -1,0 +1,6 @@
+/* Override default PicoCSS styling, since it looks a bit weird */
+dialog > article > footer > button[type="button"] {
+	/* Less spacing */
+	margin-bottom: 0;
+	padding: 5px 15px;
+}
