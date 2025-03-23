@@ -13,7 +13,6 @@ async function generateResponse(
 	const newMessageId = state.nextMessageId;
 	dispatch({ type: 'addMessage', text: '', role: 'assistant' });
 
-	console.log(state);
 	// should not happen
 	if (!state.modelName) return;
 
@@ -28,9 +27,13 @@ async function generateResponse(
 	});
 
 	let message = '';
-	for await (const part of responseStream) {
-		message += part.message.content;
-		dispatch({ type: 'updateMessage', id: newMessageId, text: message });
+	try {
+		for await (const part of responseStream) {
+			message += part.message.content;
+			dispatch({ type: 'updateMessage', id: newMessageId, text: message });
+		}
+	} catch (e) {
+		console.error(`Error during generation: ${e}`);
 	}
 	dispatch({ type: 'setStreaming', streaming: false });
 }

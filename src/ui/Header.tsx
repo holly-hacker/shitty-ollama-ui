@@ -2,10 +2,12 @@ import { useContext, useEffect, useState } from 'react';
 import './Header.css';
 import type { ModelResponse } from 'ollama/browser';
 import { OllamaContext } from '../state/OllamaContext';
-import SettingsButton from './settings/SettingsButton';
+import { EraserIcon } from 'lucide-react';
+import { SettingsModalContext } from '../state/SettingsModalContext';
 
 export default function Header() {
 	const { state, dispatch } = useContext(OllamaContext);
+	const { handleOpen } = useContext(SettingsModalContext);
 
 	const [models, setModels] = useState<ModelResponse[]>([]);
 
@@ -23,7 +25,9 @@ export default function Header() {
 	return (
 		<header className="container top-header">
 			<h1>Shitty Ollama UI</h1>
+
 			<div className="spacer" />
+
 			{state.modelName ? (
 				<select
 					value={state.modelName}
@@ -44,7 +48,23 @@ export default function Header() {
 					<option value="">Loading...</option>
 				</select>
 			)}
-			<SettingsButton />
+
+			<button type="button" className="outline" onClick={handleOpen}>
+				Settings
+			</button>
+
+			<button
+				type="button"
+				className="outline secondary"
+				disabled={!state.messages.length}
+				onClick={() => {
+					dispatch({ type: 'clearMessages' });
+				}}
+				data-tooltip="Clear chat history"
+				data-placement="bottom"
+			>
+				<EraserIcon />
+			</button>
 		</header>
 	);
 }

@@ -5,6 +5,7 @@ export type OllamaDispatchMessage =
 	| { type: 'setModel'; modelName: string }
 	| { type: 'addMessage'; text: string; role: ChatMessageSide }
 	| { type: 'updateMessage'; id: number; text: string }
+	| { type: 'clearMessages' }
 	| { type: 'setStreaming'; streaming: boolean };
 
 export type ChatMessageSide = 'assistant' | 'user' | 'system';
@@ -77,6 +78,10 @@ function stateReducer(
 			newState.messages.filter((m) => m.id === action.id)[0].text = action.text;
 
 			return newState;
+		}
+		case 'clearMessages': {
+			state.api.abort();
+			return { ...state, messages: [] };
 		}
 		case 'setStreaming': {
 			return { ...state, streaming: action.streaming };
