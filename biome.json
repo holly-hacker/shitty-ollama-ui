@@ -10,7 +10,7 @@
 	},
 	"formatter": {
 		"indentStyle": "tab",
-		"ignore": ["*.json"]
+		"ignore": ["package-lock.json"]
 	},
 	"javascript": {
 		"formatter": {

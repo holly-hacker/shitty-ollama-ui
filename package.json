@@ -3,11 +3,11 @@
 	"private": true,
 	"version": "1.0.0",
 	"scripts": {
-		"build": "rspack build",
+		"build": "tsc -b && vite build",
 		"check": "biome check --write",
-		"dev": "rspack dev",
+		"dev": "vite",
 		"format": "biome format --write",
-		"preview": "rspack preview"
+		"preview": "vite preview"
 	},
 	"dependencies": {
 		"ollama": "^0.5.14",
@@ -16,13 +16,12 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^1.9.4",
-		"@rspack/cli": "^1.2.8",
-		"@rspack/core": "^1.2.8",
-		"@rspack/plugin-react-refresh": "^1.0.1",
 		"@types/react": "^19.0.10",
 		"@types/react-dom": "^19.0.4",
-		"react-refresh": "^0.16.0",
-		"ts-node": "^10.9.2",
-		"typescript": "^5.7.3"
+		"@vitejs/plugin-react": "^4.3.4",
+		"globals": "^15.15.0",
+		"typescript": "~5.7.2",
+		"typescript-eslint": "^8.24.1",
+		"vite": "^6.2.0"
 	}
 }
