@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from 'react';
 import './Header.css';
+import { EraserIcon } from 'lucide-react';
 import type { ModelResponse } from 'ollama/browser';
 import { OllamaContext } from '../state/OllamaContext';
-import { EraserIcon } from 'lucide-react';
 import { SettingsModalContext } from '../state/SettingsModalContext';
 
 export default function Header() {

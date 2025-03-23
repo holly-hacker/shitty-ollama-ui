@@ -4,7 +4,19 @@ import { createContext, useReducer } from 'react';
 export type OllamaDispatchMessage =
 	| { type: 'setModel'; modelName: string }
 	| { type: 'addMessage'; text: string; role: ChatMessageSide }
-	| { type: 'updateMessage'; id: number; text: string }
+	| { type: 'addMessageHistory'; id: number; text: string }
+	| {
+			type: 'updateMessage';
+			id: number;
+			patch: Exclude<Partial<ChatMessage>, 'id'>;
+	  }
+	| {
+			type: 'updateMessageText';
+			id: number;
+			historyIndex?: number;
+			text: string;
+	  }
+	| { type: 'deleteMessage'; id: number }
 	| { type: 'clearMessages' }
 	| { type: 'setStreaming'; streaming: boolean };
 
@@ -12,7 +24,8 @@ export type ChatMessageSide = 'assistant' | 'user' | 'system';
 
 export type ChatMessage = {
 	id: number;
-	text: string;
+	history: string[];
+	historyIndex: number;
 	side: ChatMessageSide;
 };
 
@@ -57,27 +70,98 @@ function stateReducer(
 	console.log('incoming action in state reducer', state, action);
 	switch (action.type) {
 		case 'setModel': {
-			state.modelName = action.modelName;
-			return { ...state, modelName: action.modelName };
+			const newState: OllamaState = { ...state };
+			newState.modelName = action.modelName;
+			return newState;
 		}
 		case 'addMessage': {
-			const newState: OllamaState = {
-				...state,
-				nextMessageId: state.nextMessageId + 1,
-				messages: [
-					...state.messages,
-					{ id: state.nextMessageId, text: action.text, side: action.role },
-				],
-			};
+			const newState: OllamaState = { ...state };
+
+			newState.messages = [
+				...state.messages,
+				{
+					id: state.nextMessageId,
+					history: [action.text],
+					historyIndex: 0,
+					side: action.role,
+				},
+			];
+
+			newState.nextMessageId++;
+
+			return newState;
+		}
+		case 'addMessageHistory': {
+			const newState: OllamaState = { ...state };
+
+			const messageToEdit = state.messages.find((m) => m.id === action.id);
+			if (!messageToEdit) return state;
+			const messageIndex = state.messages.indexOf(messageToEdit);
+
+			newState.messages = [
+				...state.messages.slice(0, messageIndex),
+				{
+					...messageToEdit,
+					history: [...messageToEdit.history, action.text],
+					historyIndex: messageToEdit.history.length,
+				},
+				...state.messages.slice(messageIndex + 1),
+			];
 
 			return newState;
 		}
 		case 'updateMessage': {
 			const newState: OllamaState = { ...state };
 
-			newState.messages.filter((m) => m.id === action.id)[0].text = action.text;
+			const message = newState.messages.find((m) => m.id === action.id);
+			if (!message) return state;
+			const messageIndex = newState.messages.indexOf(message);
+
+			newState.messages = [
+				...newState.messages.slice(0, messageIndex),
+				{
+					...message,
+					...action.patch,
+				},
+				...newState.messages.slice(messageIndex + 1),
+			];
 
 			return newState;
+		}
+		case 'updateMessageText': {
+			const newState: OllamaState = { ...state };
+
+			const message = newState.messages.find((m) => m.id === action.id);
+			if (!message) {
+				console.error('message not found!', action.id);
+				if (state.streaming) {
+					state.api.abort();
+				}
+				return state;
+			}
+			const messageIndex = newState.messages.indexOf(message);
+
+			const historyIndex = action.historyIndex ?? message.historyIndex;
+			newState.messages = [
+				...newState.messages.slice(0, messageIndex),
+				{
+					...message,
+					history: [
+						...message.history.slice(0, historyIndex),
+						action.text,
+						...message.history.slice(historyIndex + 1),
+					],
+				},
+				...newState.messages.slice(messageIndex + 1),
+			];
+
+			return newState;
+		}
+		case 'deleteMessage': {
+			return {
+				...state,
+				messages: state.messages.filter((m) => m.id !== action.id),
+			};
 		}
 		case 'clearMessages': {
 			state.api.abort();

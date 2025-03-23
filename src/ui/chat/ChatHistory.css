@@ -1,36 +1,5 @@
-.message-container {
+.messages-container {
 	display: flex;
 	flex-direction: column;
-}
-
-article {
-	max-width: 65%;
-}
-
-article.no-md {
-	white-space-collapse: preserve;
-}
-
-article.md p:last-child {
-	margin-bottom: 0;
-}
-
-/* Fix padding in weirdly generated html (pre>div>code) */
-article.md pre > div {
-	margin: 0 !important;
-}
-
-article.system {
-	max-width: 100%;
-	width: 100%;
-}
-
-article.assistant {
-	align-self: self-start;
-}
-
-article.user {
-	background-color: var(--pico-primary-background);
-	color: var(--pico-primary-inverse);
-	align-self: self-end;
+	margin-bottom: 1rem;
 }

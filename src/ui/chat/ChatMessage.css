@@ -1,0 +1,63 @@
+.chat-message {
+	max-width: 65%;
+}
+
+.chat-message article {
+	margin-bottom: 0;
+}
+
+.chat-message.no-md article {
+	white-space-collapse: preserve;
+}
+
+.chat-message.md p:last-child {
+	margin-bottom: 0;
+}
+
+/* Fix padding in weirdly generated html (pre>div>code) */
+.chat-message.md pre > div {
+	margin: 0 !important;
+}
+
+.chat-message.system {
+	max-width: 100%;
+	width: 100%;
+}
+
+.chat-message.assistant {
+	align-self: self-start;
+}
+
+.chat-message.user {
+	align-self: self-end;
+}
+
+.chat-message.user article {
+	background-color: var(--pico-primary-background);
+}
+
+.chat-message.user article,
+.chat-message.user article p {
+	color: var(--pico-primary-inverse);
+}
+
+.chat-message .action-bar {
+	display: flex;
+	margin-top: 0.25rem;
+}
+
+.chat-message .action-bar .spacer {
+	flex-grow: 1;
+}
+
+.chat-message .action-bar .icon {
+	margin: 0.25rem;
+}
+
+.chat-message .action-bar .icon[aria-disabled="true"] {
+	opacity: 50%;
+}
+
+.chat-message .action-bar .icon:not([aria-disabled="true"]) {
+	cursor: pointer;
+}

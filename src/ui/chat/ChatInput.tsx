@@ -1,43 +1,8 @@
 import { useContext, useEffect, useState } from 'react';
-import {
-	OllamaContext,
-	type OllamaDispatchMessage,
-	type OllamaState,
-} from '../../state/OllamaContext';
+import { OllamaContext } from '../../state/OllamaContext';
 import './ChatInput.css';
 import { SendIcon, StopCircleIcon } from 'lucide-react';
-
-async function generateResponse(
-	state: OllamaState,
-	dispatch: (action: OllamaDispatchMessage) => void,
-) {
-	const newMessageId = state.nextMessageId;
-	dispatch({ type: 'addMessage', text: '', role: 'assistant' });
-
-	// should not happen
-	if (!state.modelName) return;
-
-	dispatch({ type: 'setStreaming', streaming: true });
-	const responseStream = await state.api.chat({
-		stream: true,
-		model: state.modelName,
-		messages: state.messages.map((msg) => ({
-			content: msg.text,
-			role: msg.side,
-		})),
-	});
-
-	let message = '';
-	try {
-		for await (const part of responseStream) {
-			message += part.message.content;
-			dispatch({ type: 'updateMessage', id: newMessageId, text: message });
-		}
-	} catch (e) {
-		console.error(`Error during generation: ${e}`);
-	}
-	dispatch({ type: 'setStreaming', streaming: false });
-}
+import { generateResponse } from '../../utils/ollama';
 
 export default function ChatInput() {
 	const { state, dispatch } = useContext(OllamaContext);
