@@ -18,7 +18,8 @@ export type OllamaDispatchMessage =
 	  }
 	| { type: 'deleteMessage'; id: number }
 	| { type: 'clearMessages' }
-	| { type: 'setStreaming'; streaming: boolean };
+	| { type: 'setStreaming'; streaming: true; id: number }
+	| { type: 'setStreaming'; streaming: false };
 
 export type ChatMessageSide = 'assistant' | 'user' | 'system';
 
@@ -35,6 +36,7 @@ export type OllamaState = {
 	messages: ChatMessage[];
 	nextMessageId: number;
 	streaming: boolean;
+	streamingMessageId: number | null;
 };
 
 const initialState: OllamaState = {
@@ -43,6 +45,7 @@ const initialState: OllamaState = {
 	messages: [],
 	nextMessageId: 1,
 	streaming: false,
+	streamingMessageId: null,
 };
 
 export const OllamaContext = createContext<{
@@ -168,7 +171,11 @@ function stateReducer(
 			return { ...state, messages: [] };
 		}
 		case 'setStreaming': {
-			return { ...state, streaming: action.streaming };
+			return {
+				...state,
+				streaming: action.streaming,
+				streamingMessageId: action.streaming ? action.id : null,
+			};
 		}
 	}
 }

@@ -7,6 +7,7 @@ import { SettingsContext } from '../../state/SettingsContext';
 import ChatMarkdown from '../util/ChatMarkdown';
 import './ChatMessage.css';
 import {
+	BanIcon,
 	CheckIcon,
 	ChevronLeftIcon,
 	ChevronRightIcon,
@@ -68,7 +69,13 @@ export default function ChatMessage({
 					</>
 				)}
 				<div className="spacer" />
-				{isEditing ? (
+				{state.streamingMessageId === message.id ? (
+					<BanIcon
+						className="icon"
+						size={iconSize}
+						onClick={() => state.api.abort()}
+					/>
+				) : isEditing ? (
 					<>
 						<CheckIcon
 							className="icon"

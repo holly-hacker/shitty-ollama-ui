@@ -12,7 +12,7 @@ export async function generateResponse(
 	// should not happen
 	if (!state.modelName) return;
 
-	dispatch({ type: 'setStreaming', streaming: true });
+	dispatch({ type: 'setStreaming', streaming: true, id: newMessageId });
 	dispatch({ type: 'addMessage', text: '', role: 'assistant' });
 	const responseStream = await state.api.chat({
 		stream: true,
@@ -53,7 +53,7 @@ export async function regenerateResponse(
 	// should not happen
 	if (!state.modelName) return;
 
-	dispatch({ type: 'setStreaming', streaming: true });
+	dispatch({ type: 'setStreaming', streaming: true, id: messageId });
 
 	let message = '';
 	dispatch({ type: 'addMessageHistory', text: message, id: messageId });
