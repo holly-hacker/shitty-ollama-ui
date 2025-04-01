@@ -19,6 +19,11 @@
 	margin: 0 !important;
 }
 
+.chat-message textarea {
+	margin: 0 !important;
+	resize: both;
+}
+
 .chat-message.system {
 	max-width: 100%;
 	width: 100%;

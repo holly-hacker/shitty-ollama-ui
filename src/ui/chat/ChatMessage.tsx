@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import {
 	type ChatMessage as ChatMessageType,
 	OllamaContext,
@@ -7,8 +7,10 @@ import { SettingsContext } from '../../state/SettingsContext';
 import ChatMarkdown from '../util/ChatMarkdown';
 import './ChatMessage.css';
 import {
+	CheckIcon,
 	ChevronLeftIcon,
 	ChevronRightIcon,
+	PencilIcon,
 	RefreshCcwIcon,
 	Trash2Icon,
 } from 'lucide-react';
@@ -22,6 +24,7 @@ export default function ChatMessage({
 }: { message: ChatMessageType }) {
 	const { state, dispatch } = useContext(OllamaContext);
 	const { settings } = useContext(SettingsContext);
+	const [isEditing, setEditing] = useState(false);
 
 	const messageText = message.history[message.historyIndex];
 
@@ -65,21 +68,64 @@ export default function ChatMessage({
 					</>
 				)}
 				<div className="spacer" />
-				<RefreshCcwIcon
-					className="icon"
-					size={iconSize}
-					onClick={() => {
-						regenerateResponse(state, message.id, dispatch);
-					}}
-				/>
-				<Trash2Icon
-					className="icon"
-					size={iconSize}
-					onClick={() => dispatch({ type: 'deleteMessage', id: message.id })}
-				/>
+				{isEditing ? (
+					<>
+						<CheckIcon
+							className="icon"
+							size={iconSize}
+							onClick={() => setEditing(false)}
+						/>
+					</>
+				) : (
+					<>
+						<PencilIcon
+							className="icon"
+							size={iconSize}
+							onClick={() => setEditing(true)}
+						/>
+
+						<RefreshCcwIcon
+							className="icon"
+							size={iconSize}
+							display={message.side === 'assistant' ? undefined : 'none'}
+							onClick={() => {
+								regenerateResponse(state, message.id, dispatch);
+							}}
+						/>
+						<Trash2Icon
+							className="icon"
+							size={iconSize}
+							onClick={() =>
+								dispatch({ type: 'deleteMessage', id: message.id })
+							}
+						/>
+					</>
+				)}
 			</div>
 			<article aria-busy={!messageText && state.streaming}>
-				{useMarkdown ? <ChatMarkdown>{messageText}</ChatMarkdown> : messageText}
+				{isEditing ? (
+					<>
+						<textarea
+							cols={40}
+							rows={8}
+							value={messageText}
+							onChange={(e) => {
+								dispatch({
+									type: 'updateMessageText',
+									id: message.id,
+									historyIndex: message.historyIndex,
+									text: e.target.value,
+								});
+							}}
+						>
+							{messageText}
+						</textarea>
+					</>
+				) : useMarkdown ? (
+					<ChatMarkdown>{messageText}</ChatMarkdown>
+				) : (
+					messageText
+				)}
 			</article>
 		</div>
 	);
