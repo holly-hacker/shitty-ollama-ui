@@ -1,0 +1,24 @@
+.everything {
+	height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
+
+main {
+	/* grow inside parent */
+	flex-grow: 1;
+
+	display: flex;
+	flex-direction: column;
+
+	/* sets the height to fit in the viewport? happy little accident */
+	overflow: hidden;
+}
+
+.chat-history-container {
+	flex-grow: 1;
+	overflow-y: auto;
+
+	padding: 1rem;
+	padding-bottom: 2rem;
+}
