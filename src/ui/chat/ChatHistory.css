@@ -3,3 +3,8 @@
 	flex-direction: column;
 	margin-bottom: 1rem;
 }
+
+.messages-container > button.generate-assistant-message {
+	margin-top: 1rem;
+	width: 60%;
+}
