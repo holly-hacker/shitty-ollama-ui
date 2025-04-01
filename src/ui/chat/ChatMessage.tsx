@@ -37,7 +37,7 @@ export default function ChatMessage({
 			{...rest}
 		>
 			<div className="action-bar">
-				{message.history.length > 1 && (
+				{!isEditing && message.history.length > 1 && (
 					<>
 						<ChevronLeftIcon
 							className="icon"
@@ -77,11 +77,13 @@ export default function ChatMessage({
 					/>
 				) : isEditing ? (
 					<>
-						<CheckIcon
-							className="icon"
-							size={iconSize}
+						<span
+							style={{ cursor: 'pointer' }}
 							onClick={() => setEditing(false)}
-						/>
+							onKeyDown={() => setEditing(false)}
+						>
+							Press Ctrl+Enter or click here to submit
+						</span>
 					</>
 				) : (
 					<>
@@ -109,7 +111,10 @@ export default function ChatMessage({
 					</>
 				)}
 			</div>
-			<article aria-busy={!messageText && state.streaming}>
+			<article
+				aria-busy={!messageText && state.streaming}
+				onDoubleClick={() => !state.streaming && setEditing(true)}
+			>
 				{isEditing ? (
 					<>
 						<textarea
@@ -123,6 +128,12 @@ export default function ChatMessage({
 									historyIndex: message.historyIndex,
 									text: e.target.value,
 								});
+							}}
+							onKeyDown={(e) => {
+								if (e.ctrlKey && e.key === 'Enter') {
+									e.preventDefault();
+									setEditing(false);
+								}
 							}}
 						>
 							{messageText}

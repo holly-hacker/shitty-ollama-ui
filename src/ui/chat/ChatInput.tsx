@@ -47,7 +47,7 @@ export default function ChatInput() {
 					onKeyDown={handleKeyDown}
 				/>
 				<small>
-					Press <kbd>Enter</kbd> to send or <kbd>Enter</kbd>+<kbd>Shift</kbd> to
+					Press <kbd>Enter</kbd> to send or <kbd>Shift</kbd>+<kbd>Enter</kbd> to
 					create a new line.
 				</small>
 
